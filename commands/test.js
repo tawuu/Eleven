@@ -2,8 +2,17 @@ module.exports.names = ["test"];
 module.exports.dev = true;
 module.exports.run = async (client, message, args, database) => {
 
-    isAvailable = require(`../database/isAvailable.js`);
-    GuildMemberRole = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "chatxp");
-    message.channel.send(GuildMemberRole);
+    var promise = new Promise((resolve, reject) => {
+        message.channel.send("olá!")
+            .then(resolve("everything worked!"))
+            .catch(reject("something goes wrong!"));
+    });
+
+    promise.then(result => {
+        console.log(result);
+    }).catch(err => {
+        console.log(err);
+    });
+
 
 };

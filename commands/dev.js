@@ -222,9 +222,9 @@ module.exports.run = (client, message, args, database) => {
         if (!services.includes(service[0].toLowerCase())) return channel.send(`invalid service.`);
 
         isAvailable = require("../database/isAvailable.js");
-
-        if (!isAvailable.Guild(ServerID, database, service[0])) {
-            channel.send(`Service **${service[0]}** is already opened to the guild **${ServerID}** [${ServerName}]`);
+        isAvailableGuild = await isAvailable.Guild(ServerID, database, service[0])
+        if (!isAvailableGuild) {
+            channel.send(`Service **${service[0]}** is not allowed to the guild **${ServerID}** [${ServerName}]`);
         } else {
             const roleToAdd = client.guilds.get(ServerID).roles.find(r => r.id === role || r.name === role || r === role) || message.mentions.roles.first();
             if (!roleToAdd) return channel.send(`Invalid role`);
