@@ -5,10 +5,25 @@ const config = require("./config.json");
 
 const client = new Client();
 
+var express = require('express');
+var app = express();
+
+app.set('port', (process.env.PORT || 5000));
+
+app.get('/', function (request, response) {
+    var result = 'App is running'
+    response.send(result);
+}).listen(app.get('port'), function () {
+    console.log('App is running, server is listening on port ', app.get('port'))
+});
+
 client.commands = new Collection();
 client.omegle = new Collection();
 client.omegleStrangers = new Array();
 client.omegleStrangersMatched = new Array();
+
+
+
 
 const commandsPath = `./commands/`;
 const omeglePath = `./omegleCommands/`;
@@ -58,17 +73,17 @@ readdir(omeglePath, (err, files) => {
 
 client.on(`guildCreate`, async (guild) => {
     const AvailableServicesDatabase = database.ref(`AvailableServices/${guild.id}/`);
-    
+
     const AvailableServicesDatabaseVal = await AvailableServicesDatabase.once("value");
 
     if (!AvailableServicesDatabaseVal.val() === null) return;
-    
+
     AvailableServicesDatabase.set({
         Money: false,
         ChatXP: false,
         CallXP: false
     });
-    
+
 });
 
 client.on("message", (message) => {
@@ -80,9 +95,9 @@ client.on("message", (message) => {
 
     if (client.commands.has(commandName)) command = client.commands.get(commandName);
     else return;
-   
-    if (command.dev && message.author.id !== "474407357649256448") return; 
-   
+
+    if (command.dev && message.author.id !== "474407357649256448") return;
+
     command.run(client, message, args, database);
 });
 
