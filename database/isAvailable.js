@@ -30,7 +30,9 @@ module.exports.GuildMemberRole = async (guildID, memberID, database, service) =>
 
     if (AvailableServiceForRoleVal.val() === null) return isAvailable = false;
 
-    const AvailableRoles = AvailableServiceForRoleVal.val();
+    AvailableRolesDb = AvailableServiceForRoleVal.val();
+
+    AvailableRoles = AvailableRolesDb.includes(",") ? AvailableRolesDb.split(",") : [AvailableRolesDb];
 
     const userRoles = client.guilds.get(guildID).members.get(memberID).roles;
 
@@ -71,7 +73,7 @@ module.exports.Guild = async (guildID, database, service) => {
 
     const AvailableServicesDatabaseVal = await AvailableServicesDatabase.once("value");
 
-    if (AvailableServicesDatabaseVal.val() === null)  isAvailable = false;
+    if (AvailableServicesDatabaseVal.val() === null) isAvailable = false;
     else if (AvailableServicesDatabaseVal.val()[service] === false) isAvailable = false;
     else isAvailable = true;
 

@@ -2,17 +2,12 @@ module.exports.names = ["test"];
 module.exports.dev = true;
 module.exports.run = async (client, message, args, database) => {
 
-    var promise = new Promise((resolve, reject) => {
-        message.channel.send("olá!")
-            .then(resolve("everything worked!"))
-            .catch(reject("something goes wrong!"));
-    });
+    let service = "MembersChatXP";
+    UpdatedRoles = [];
 
-    promise.then(result => {
-        console.log(result);
-    }).catch(err => {
-        console.log(err);
-    });
+    const SetNewAvailableRole = database.ref(`Configs/${message.guild.id}/${service}/`);
+    if (UpdatedRoles.length === 0) SetNewAvailableRole.set({ AvailableRoles: null })
+    else SetNewAvailableRole.set({ AvailableRoles: null });
 
 
 };
