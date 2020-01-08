@@ -20,12 +20,34 @@ A cada intervalo de tempo que o usuário enviar mensagens em um canal de texto e
 
 - \>chatsystem addrole [role] 
   - _role = menção/id/nome_
-  - Permita um cargo utilizar este serviço.
+  - Permita um cargo utilizar o serviço Chat System.
 
 - \>chatsystem removerole [role]
   - _role = menção/id/nome_
-  - Remova um cargo que esteja utilizando este serviço.
+  - Remova um cargo que esteja utilizando o serviço Chat System.
 
 - \>level chat [member]
   - _member = menção/nothing_
   - Veja o seu nível e experiência ou do usuário que mencionou.
+
+# Call System
+
+Este sistema consiste em acumular tempo em canais de voz, mas claro, com minha inteligência detectarei se o usuário está de fato numa conversa ou não e também conta com um RANK exclusivo para o seu servidor.
+
+## Como funciona:
+
+......
+
+## Comandos: 
+
+- \>callsystem addrole [role] 
+  - _role = menção/id/nome_
+  - Permita um cargo utilizar o serviço Call System.
+
+- \>callsystem removerole [role]
+  - _role = menção/id/nome_
+  - Remova um cargo que esteja utilizando o serviço Call System.
+
+- \>level call [member]
+  - _member = menção/nothing_
+  - Veja o seu tempo acumulado ou do usuário que mencionou.
