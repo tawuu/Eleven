@@ -7,4 +7,8 @@ Este guia irá lhe ajudar a entender como todos os meus sistemas funcionam e com
 ###### Este sistema consiste em ganhar experiência por mensagens enviadas em chat de texto. Os usuários podem subir de nível e ainda há um RANK exclusivo para seu servidor.
 
 - \>chatsystem addrole [role] 
-  - Adicione um cargo para poder utilizar este serviço.
+  - Permita um cargo utilizar este serviço.
+
+- \>chatsystem removerole [role]
+  - _role = menção/id/nome_
+  - Remova um cargo que esteja utilizando este serviço.
