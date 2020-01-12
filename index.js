@@ -5,6 +5,22 @@ const config = require("./config.json");
 const client = new Client();
 
 
+require('dotenv').config()
+const express = require('express')
+const app = express()
+const axios = require("axios");
+
+app.get('/', (req, res) => {
+    res.send('Blz...')
+})
+
+app.listen(process.env.PORT || 3000, () => {
+    setInterval(async () => {
+        await axios.get('https://eleven-heroku.herokuapp.com');
+        console.log('[GET] - Bot request heroku url');
+    }, 25 * 60000);
+});
+
 client.commands = new Collection();
 client.omegle = new Collection();
 client.omegleStrangers = new Array();
