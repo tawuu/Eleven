@@ -11,8 +11,8 @@ class Fight {
     }
 
     async move(moviment) {
-        const chance = Math.floor(Math.random() * 2);
-        if (chance === 1) {
+        const chance = Math.floor(Math.random() * 100);
+        if (chance > 70) {
             // successfully moviment!
             
             switch (moviment) {
@@ -42,6 +42,12 @@ class Fight {
     }
 
     punch(fighter) {
+        let chance = Math.floor(Math.random() * 100);
+
+        if (chance < 50) {
+            console.log(chance);
+        }
+
     }
 
     whoMoves() { return this.nowMoviment };
