@@ -1,75 +1,19 @@
 const { Client, Collection } = require("discord.js");
-const { readdir } = require("fs");
 const database = require("./database/database.js");
 const config = require("./config.json");
 
 const client = new Client();
 
-var express = require('express');
-var app = express();
-
-app.set('port', (process.env.PORT || 5000));
-
-app.get('/', function (request, response) {
-    var result = 'App is running'
-    response.send(result);
-}).listen(app.get('port'), function () {
-    console.log('App is running, server is listening on port ', app.get('port'))
-});
 
 client.commands = new Collection();
 client.omegle = new Collection();
 client.omegleStrangers = new Array();
 client.omegleStrangersMatched = new Array();
 
+let AutomaticHandler = require(`./AutomaticHandler.js`);
 
-
-
-const commandsPath = `./commands/`;
-const omeglePath = `./omegleCommands/`;
-
-readdir(commandsPath, (err, files) => {
-    if (err) throw err;
-    let props;
-    files.forEach(file => {
-        if (file.endsWith(".js")) {
-            try {
-                props = require(`${commandsPath}${file}`);
-                props.names.map(name => client.commands.set(name, props));
-                console.log(`sucessfully loaded: ${file}`);
-            } catch (error) {
-                console.log(error.message);
-                console.log(`error trying to load this file: ${file}`);
-            }
-        } else if (!file.includes(".")) {
-            readdir(`${commandsPath}${file}/`, (err, subfiles) => {
-                subfiles.forEach(subfile => {
-                    if (!subfile.endsWith(".js")) return;
-                    try {
-                        props = require(`${commandsPath}${files}${subfile}`);
-                        props.names.map(name => client.commands.set(name, props));
-                        console.log(`sucessfully loaded: ${subfile}`);
-                    } catch (error) {
-                        console.log(error.message);
-                        console.log(`error trying to load this file: ${subfile}`);
-                    }
-                });
-            });
-        }
-    })
-
-});
-
-readdir(omeglePath, (err, files) => {
-    if (err) throw err;
-    files.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        commandName = file.split(".")[0];
-        props = require(`${omeglePath}${file}`);
-        console.log(`[omegle] sucessfully loaded: ${commandName}`);
-        client.omegle.set(commandName, props);
-    });
-});
+AutomaticHandler(`./commands/`, client.commands);
+AutomaticHandler(`./omegleCommands/`, client.omegle);
 
 client.on(`guildCreate`, async (guild) => {
     const AvailableServicesDatabase = database.ref(`AvailableServices/${guild.id}/`);
@@ -86,6 +30,8 @@ client.on(`guildCreate`, async (guild) => {
 
 });
 
+
+
 client.on("message", (message) => {
     if (message.channel.type === "dm" || message.author.bot || !message.content.startsWith(config.prefix)) return;
 
@@ -101,7 +47,6 @@ client.on("message", (message) => {
     command.run(client, message, args, database);
 });
 
-client.on("ready", () => console.log("ready"));
 
 //CALLSYSTEM
 client.on("voiceStateUpdate", (oldMember, newMember) => require(`./events/voiceStateUpdate.js`)(client, oldMember, newMember, database));
