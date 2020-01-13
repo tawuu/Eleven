@@ -2,7 +2,9 @@ const { Client, Collection } = require("discord.js");
 const database = require("./database/database.js");
 const config = require("./config.json");
 
-const client = new Client();
+const client = new Client({
+    disableEveryone: true
+});
 
 
 require('dotenv').config()
@@ -28,8 +30,8 @@ client.omegleStrangersMatched = new Array();
 
 let AutomaticHandler = require(`./AutomaticHandler.js`);
 
-AutomaticHandler(`./commands/`, client.commands);
-AutomaticHandler(`./omegleCommands/`, client.omegle);
+AutomaticHandler(`./commands/`, client.commands).catch(console.error);
+AutomaticHandler(`./omegleCommands/`, client.omegle).catch(console.error);
 
 client.on(`guildCreate`, async (guild) => {
     const AvailableServicesDatabase = database.ref(`AvailableServices/${guild.id}/`);

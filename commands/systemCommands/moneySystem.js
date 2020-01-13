@@ -1,13 +1,13 @@
-module.exports.names = ["callsystem", "chat"];
+module.exports.names = ["moneysystem", "money"];
 
 module.exports.run = async (client, message, args, database) => {
     if (message.author.id !== message.guild.ownerID) return;
 
     const channel = message.channel;
 
-    isAvailable = require(`../database/isAvailable.js`);
+    isAvailable = require(`../../database/isAvailable.js`);
 
-    isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "callxp");
+    isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "money");
 
     if (!isAvailableGuild) return channel.send(`Seu servidor não possui este serviço.`);
 
@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args, database) => {
 
     function addRoleToServiceFromServer() {
 
-        if (!args[1]) {
+        if (!args.slice(1).join(" ")) {
             channel.send(`Informe o cargo que será adicionado. \`Um coletor de mensagens foi iniciado, caso queira cancelar digite C\``);
             const Collector = channel.createMessageCollector(m => m.author.id === message.author.id);
 
@@ -41,12 +41,17 @@ module.exports.run = async (client, message, args, database) => {
                 };
 
                 let roleToAdd;
+                let everyone = false;
+                if (["everyone", "todos"].includes(collected.content.toLowerCase())) {
+                    roleToAdd = message.guild.roles.find(r => r.name === "@everyone");
+                    everyone = true;
+                };
 
-                if (collected.mentions.roles) roleToAdd = collected.mentions.roles.first();
-                else roleToAdd = message.guild.roles.get(collected.content) || message.guild.roles.forEach(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === r);
+                if (!everyone && collected.mentions.roles) roleToAdd = collected.mentions.roles.first();
+                else if (!everyone) roleToAdd = message.guild.roles.get(collected.content) || message.guild.roles.forEach(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === r);
 
                 if (!roleToAdd) channel.send(`Cargo não encontrado. \`Digite C para cancelar!\``);
-                else return AddNewRoleToService("MembersCallXP", roleToAdd)
+                else return AddNewRoleToService("MembersMoney", roleToAdd)
                     .then(() => {
                         Collector.stop();
                         return channel.send(`O cargo ${roleToAdd} foi salvo com sucesso!`);
@@ -60,12 +65,16 @@ module.exports.run = async (client, message, args, database) => {
 
         } else {
 
-            roleToAdd = args[1];
+            roleToAdd = args.slice(1).join(" ");
 
-            roleToAdd = message.mentions.roles.first() || message.guild.roles.find(r => r.id === roleToAdd || r.name === roleToAdd.toLowerCase()) || message.guild.roles.get(roleToAdd);
+            if (["everyone", "todos"].includes(roleToAdd.toLowerCase())) {
+                roleToAdd = message.guild.roles.find(c => c.name === "@everyone");
+            } else {
+                roleToAdd = message.mentions.roles.first() || message.guild.roles.find(r => r.id === roleToAdd || r.name.toLowerCase() === roleToAdd.toLowerCase()) || message.guild.roles.get(roleToAdd);
+            };
 
             if (!roleToAdd) return channel.send(`Cargo não encontrado, por favor tente novamente.`);
-            else return AddNewRoleToService("MembersCallXP", roleToAdd)
+            else AddNewRoleToService("MembersMoney", roleToAdd)
                 .then(() => {
                     return channel.send(`O cargo ${roleToAdd} foi salvo com sucesso!`)
                 })
@@ -77,7 +86,7 @@ module.exports.run = async (client, message, args, database) => {
     }
 
     function removeRoleToServiceFromServer() {
-        if (!args[1]) {
+        if (!args.slice(1).join(" ")) {
             channel.send(`Informe o cargo qeu será removido \`Um coletor de mensagens foi iniciado, caso queira cancelar digite C\``);
 
             const Collector = channel.createMessageCollector(m => m.author.id === message.author.id);
@@ -88,11 +97,14 @@ module.exports.run = async (client, message, args, database) => {
                 }
 
                 let roleToRemove;
+                if (['everyone', 'todos'].includes(collected.content.toLowerCase())) {
+                    roleToRemove = message.guild.roles.find(r => r.name === "@everyone");
+                }
 
-                roleToRemove = collected.mentions.roles.first() || message.guild.roles.get(collected.content) || message.guild.roles.forEach(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === collected.content);
+                if (!roleToRemove) roleToRemove = collected.mentions.roles.first() || message.guild.roles.get(collected.content) || message.guild.roles.find(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === collected.content);
 
                 if (!roleToRemove) channel.send(`Cargo não encontrado. \`Digite C para cancelar ou tente novamente!\``);
-                else return removeRoleFromService("MembersCallXP", roleToRemove)
+                else return removeRoleFromService("MembersMoney", roleToRemove)
                     .then(() => {
                         Collector.stop();
                         return channel.send(`O cargo ${roleToRemove} foi removido com sucesso!`);
@@ -108,16 +120,20 @@ module.exports.run = async (client, message, args, database) => {
 
             });
         } else {
-            roleToRemove = args[1];
+            roleToRemove = args.slice(1).join(" ");
+            if (["everyone", "todos"].includes(roleToRemove.toLowerCase())) {
+                roleToRemove = message.guild.roles.find(r => r.name === "@everyone");
+            } else {
+                roleToRemove = message.mentions.roles.first() || message.guild.roles.get(roleToRemove) || message.guild.roles.find(r => r.name.toLowerCase() === roleToRemove.toLowerCase());
+            }
 
-            roleToRemove = message.mentions.roles.first() || message.guild.roles.find(r => r.id === roleToRemove || r.name === roleToRemove.toLowerCase()) || message.guild.roles.get(roleToRemove);
             if (!roleToRemove) return channel.send(`Cargo não encontrado, por favor tente novamente.`);
-            else removeRoleFromService("MembersCallXP", roleToRemove)
+            else removeRoleFromService("MembersMoney", roleToRemove)
                 .then(() => {
                     return channel.send(`O cargo ${roleToRemove} foi removido com sucesso!`);
                 })
                 .catch((err) => {
-                    if (err.message === "role not saved") channel.send(`Este cargo não está salvo para ser removido.`);
+                    if (err.message === "role not saved") channel.send(`Este cargo não está salvo para ser removido. \`Digite C para cancelar!\``);
                     else if (err.message === "any role detected") channel.send(`Este serviço não contem cargos salvos.`);
                     else {
                         console.log(err);
@@ -171,7 +187,8 @@ module.exports.run = async (client, message, args, database) => {
 
         const SetNewAvailableRole = database.ref(`Configs/${message.guild.id}/${service}/`);
         if (UpdatedRoles.length === 0) SetNewAvailableRole.set({ AvailableRoles: null })
-        else SetNewAvailableRole.set({ AvailableRoles: UpdatedRoles.join(",") });
+        else SetNewAvailableRole.set({ AvailableRoles: null });
+
 
         return true;
     }

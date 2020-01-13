@@ -1,13 +1,25 @@
 module.exports.names = ["test"];
 module.exports.dev = true;
-module.exports.run = async (client, message, args, database) => {
 
-    let service = "MembersChatXP";
-    UpdatedRoles = [];
+const Jimp = require("Jimp");
+module.exports.run = async (client, message, args) => {
 
-    const SetNewAvailableRole = database.ref(`Configs/${message.guild.id}/${service}/`);
-    if (UpdatedRoles.length === 0) SetNewAvailableRole.set({ AvailableRoles: null })
-    else SetNewAvailableRole.set({ AvailableRoles: null });
+    const Bia = await Jimp.read(`./bia.jpg`);
 
+    maxWidth = Bia.bitmap.width;
+    maxHeight = Bia.bitmap.height;
+
+    const Teste = new Jimp(maxWidth, maxHeight);
+
+    i = 10;
+    function getCubePerfectBitmap(maxW, maxH) {
+        return { maxW: maxW / 25, maxH: maxH / 25 }
+    }
+
+    let value = getCubePerfectBitmap(maxWidth, maxHeight);
+    console.log(value);
+
+
+    Teste.writeAsync("./test.png");
 
 };

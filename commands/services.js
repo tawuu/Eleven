@@ -15,37 +15,22 @@ module.exports.run = async (client, message, args, database) => {
 
     let ServicesArray = [
         { Name: "CallXP", Firebasename: "MembersCallXP", Available: false, Roles: [] },
-        { Name: "ChatXP", Firebasename: "MembersChatXP", Available: false, Roles: [] }
+        { Name: "ChatXP", Firebasename: "MembersChatXP", Available: false, Roles: [] },
+        { Name: "Money", Firebasename: "MembersMoney", Available: false, Roles: [] }
     ];
-
+    // using
     ServicesArray.setAsAvailable = function (name) {
         this.forEach(el => {
             if (el.Name.toLowerCase() === name.toLowerCase()) el.Available = true;
         });
     }
-
+    // using
     ServicesArray.setAsUnavailable = function (name) {
         this.forEach(el => {
             if (el.Name.toLowerCase() === name.toLowerCase()) el.Available = false;
         });
     }
-
-    ServicesArray.val = function () {
-        newArr = [];
-        this.forEach(el => {
-            if (el !== Function) newArr.push(el);
-        });
-        return newArr;
-    };
-
-    ServicesArray.get = function (name) {
-        let element;
-        this.forEach(el => {
-            if (el.Name.toLowerCase() === name.toLowerCase() || el.Firebasename.toLowerCase() === name.toLowerCase()) element = el;
-        });
-        return element;
-    }
-
+    // using
     ServicesArray.getAvailables = function () {
         let availables = [];
         this.forEach(el => {
@@ -53,7 +38,7 @@ module.exports.run = async (client, message, args, database) => {
         });
         return availables;
     }
-
+    // using
     ServicesArray.getUnavailables = function () {
         let unavailables = [];
         this.forEach(el => {
@@ -61,7 +46,7 @@ module.exports.run = async (client, message, args, database) => {
         });
         return unavailables;
     }
-
+    // using
     ServicesArray.getRoles = async function (name) {
         let roles;
         for (const el of this) {
@@ -81,7 +66,7 @@ module.exports.run = async (client, message, args, database) => {
 
     const ServiceEmbed = new RichEmbed();
     ServiceEmbed.setTitle(`Lista de serviços deste servidor!`);
-    ServiceEmbed.setDescription(`adquiri apra comprar alguma`);
+    ServiceEmbed.setDescription(`Utilize o comando adquirir e veja como ter um dos serviços!`);
 
     Availables = ServicesArray.getAvailables();
     Unavailables = ServicesArray.getUnavailables();
@@ -92,8 +77,9 @@ module.exports.run = async (client, message, args, database) => {
 
             let RolesThreated;
 
-            if (Roles === null) RolesThreated = `**Nenhum** cargo está utilizando este serviço.`
-            else {
+            if (Roles == null) {
+                RolesThreated = `**Nenhum** cargo está utilizando este serviço.`
+            } else if (Roles) {
                 RolesArr = Roles.includes(",") ? Roles.split(",") : [Roles];
                 RolesThreated = [];
                 for (const Role of RolesArr) {

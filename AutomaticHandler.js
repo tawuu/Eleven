@@ -15,9 +15,10 @@ module.exports = async function AutomaticHandler(path, handlermap) {
                     f = require(`${path}${file}`);
                     f.names ? f.names.forEach(name => handlermap.set(name, f)) / console.log(`Carregado: ${file}`) : handlermap.set(f.name, f) / console.log(`Carregado: ${file}`);
                 } catch (error) {
+                    console.log(error);
                     console.log(`Erro ao tentar carregar: ${file}`);
                 }
-            } else if (fileStat.isDirectory()) AutomaticHandler(`${path}${file}/`);
+            } else if (fileStat.isDirectory()) AutomaticHandler(`${path}${file}/`, handlermap);
 
         });
     }
