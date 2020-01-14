@@ -3,9 +3,10 @@ module.exports = (client, database) => {
     setTimeout(async () => {
 
         client.guilds.forEach(async Guild => {
-
-            isAvailable = require(`../database/isAvailable.js`);
-
+            
+            index = require("../../index.js")
+            isAvailable = index.require("isAvailable.js");
+        
             isAvailableGuild = await isAvailable.Guild(Guild.id, database, "CallXP");
 
             if (isAvailableGuild === false) return;

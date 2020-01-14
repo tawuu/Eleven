@@ -1,6 +1,7 @@
 module.exports = async (MemberInfo, database) => {
 
-    isAvailable = require(`../database/isAvailable.js`);
+    index = require("../../index.js")
+    isAvailable = index.require("isAvailable.js");
 
     isAvailableGuild = await isAvailable.Guild(MemberInfo.guildID, database, "CallXP");
 

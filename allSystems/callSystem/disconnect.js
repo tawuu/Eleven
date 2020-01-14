@@ -2,8 +2,10 @@ const { appendFileSync } = require("fs");
 const moment = require("moment");
 
 module.exports = async (oldMember, newMember, database) => {
+    
+    index = require("../../index.js")
+    isAvailable = index.require("isAvailable.js");
 
-    isAvailable = require(`../database/isAvailable.js`);
 
     isAvailableGuild = await isAvailable.Guild(oldMember.guildID, database, "CallXP");
 

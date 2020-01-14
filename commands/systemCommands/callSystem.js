@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args, database) => {
 
     const channel = message.channel;
 
-    isAvailable = require(`../../database/isAvailable.js`);
+    isAvailable = client.require(`isAvailable.js`);
 
     isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "callxp");
 

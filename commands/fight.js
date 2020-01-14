@@ -1,11 +1,11 @@
 const { RichEmbed } = require("discord.js");
-Fight = require(`../fightSystem/FightClass.js`);
 
 Fighthing = new Set();
 
 module.exports.names = ["fight", "lutar"];
 
 module.exports.run = async (client, message, args) => {
+    Fight = client.require(`FightClass.js`);
 
     const channel = message.channel;
 
@@ -40,7 +40,7 @@ module.exports.run = async (client, message, args) => {
             .setDescription(`Vencedor: **${fighter.name}**`));
     });
 
-    Fight.on("attack", (fighter, attack, damage, nextFighter) => require("../fightSystem/attackMessage.js")(channel, fighter, attack, damage, nextFighter));
+    Fight.on("attack", (fighter, attack, damage, nextFighter) => client.require("attackMessage.js")(channel, fighter, attack, damage, nextFighter));
 
     collector = channel.createMessageCollector(m => Fight.moves.includes(m.content.toLowerCase()));
 

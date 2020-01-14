@@ -4,7 +4,7 @@ module.exports.run = async (client, message, args, database) => {
 
     const channel = message.channel;
 
-    const isAvailable = require(`../database/isAvailable.js`);
+    const isAvailable = client.require(`isAvailable.js`);
 
     const isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "money");
     if (!isAvailableGuild) return;
@@ -12,7 +12,7 @@ module.exports.run = async (client, message, args, database) => {
     const isAvailableGuildMember = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "money");
     if (!isAvailableGuildMember) return;
     
-    const CheckerIsAvailableToDaily = require(`../moneySystem/availableToDaily.js`);
+    const CheckerIsAvailableToDaily = client.require(`availableToDaily.js`);
 
     // const ValueForDaily = database.ref(`Configs/${message.guild.id}/MembersMoney/DailyValue`);
     
@@ -20,7 +20,7 @@ module.exports.run = async (client, message, args, database) => {
 
     const isAvailableToDaily = await CheckerIsAvailableToDaily.GuildMember(message.guild.id, message.author.id, database)
     if (isAvailableToDaily === true) {
-        const Money = require("../moneySystem/addMoney.js");
+        const Money = client.require("addMoney.js");
         Money.AddMoney(message.guild.id, message.author.id, ValueForDaily, database)
         channel.send(new RichEmbed().setDescription(`Você adquiriu **R$${ValueForDaily}**`));
     } else {

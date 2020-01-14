@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, database) => {
     }
 
     async function showRankingChat() {
-        isAvailable = require("../database/isAvailable.js")
+        isAvailable = client.require("isAvailable.js")
         isAvailable = await isAvailable.Guild(message.guild.id, database, "chatxp");
 
         if (isAvailable === false) return channel.send(`Este servidor não contém este serviço...`).then(msg => msg.delete(6000));
@@ -84,7 +84,7 @@ module.exports.run = async (client, message, args, database) => {
     }
 
     async function showRankingCall() {
-        isAvailable = require("../database/isAvailable.js")
+        isAvailable = client.require("isAvailable.js")
         isAvailable = await isAvailable.Guild(message.guild.id, database, "callxp");
 
         if (isAvailable === false) return channel.send(`Este servidor não contém este serviço...`).then(msg => msg.delete(6000));

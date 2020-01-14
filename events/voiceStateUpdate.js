@@ -30,27 +30,27 @@ module.exports = async (client, oldMember, newMember, database) => {
         guildID: oldMember.guild.id
     }
     // check alone users using callXPSystem
-    require(`../callSystem/UsersAloneInChannels.js`)(client, database);
+    client.require(`UsersAloneInChannels.js`)(client, database);
 
     // conectar | channelid true
     if (!oldMemberInfo.voiceChannelID && newMemberInfo.voiceChannelID) {
-        return require(`../callSystem/connect.js`)(newMemberInfo, database);
+        return client.require(`connect.js`)(newMemberInfo, database);
     }
     //////////////////////////////////////////////////
 
     // desconectar | channelid false  
     if (!newMemberInfo.voiceChannelID) {
-        return require(`../callSystem/disconnect.js`)(oldMemberInfo, newMemberInfo, database);
+        return client.require(`disconnect.js`)(oldMemberInfo, newMemberInfo, database);
     };
     //////////////////////////////////////////////////
 
     // mutar | muted true
     if (!oldMemberInfo.selfMute && newMemberInfo.selfMute || !oldMemberInfo.serverMute && newMemberInfo.serverMute || !oldMemberInfo.serverDeaf && oldMemberInfo.serverDeaf) {
-        return require(`../callSystem/setUserAsUnavailable.js`)(database, newMemberInfo, "mute");
+        return client.require(`setUserAsUnavailable.js`)(database, newMemberInfo, "mute");
     }
     // desmutar | muted false
     if (oldMemberInfo.selfMute && !newMemberInfo.selfMute || oldMemberInfo.selfMute && !newMemberInfo.serverMute || oldMemberInfo.serverDeaf && !oldMemberInfo.serverDeaf) {
-        return require(`../callSystem/setUserAsAvailable.js`)(database, newMemberInfo, "mute");
+        return client.require(`setUserAsAvailable.js`)(database, newMemberInfo, "mute");
     }
 
 

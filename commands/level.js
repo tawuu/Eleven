@@ -24,9 +24,9 @@ module.exports.run = async (client, message, args, database) => {
 
     async function showLevelChat() {
         
-        isAvailable = require(`../database/isAvailable.js`);
+        isAvailable = client.require(`isAvailable.js`);
         isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "chatxp");
-        isAvailable = require(`../database/isAvailable.js`);
+        isAvailable = client.require(`isAvailable.js`);
         isAvailableRole = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "chatxp");
         if (!isAvailableGuild) return channel.send(`Serviço desabilitado neste servidor.`).then(msg => msg.delete(6000));
         if (!isAvailableRole) return channel.send(`Seu cargo não permite este serviço.`).then(msg => msg.delete(6000));
@@ -51,9 +51,9 @@ module.exports.run = async (client, message, args, database) => {
     async function showLevelCall() {
 
         
-        isAvailable = require(`../database/isAvailable.js`);
+        isAvailable = client.require(`isAvailable.js`);
         isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "callxp");
-        isAvailable = require(`../database/isAvailable.js`);
+        isAvailable = client.require(`isAvailable.js`);
         isAvailableRole = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "callxp");
         
         if (!isAvailableGuild) return channel.send(`Serviço desabilitado neste servidor.`).then(msg => msg.delete(6000));

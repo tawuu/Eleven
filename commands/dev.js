@@ -58,7 +58,7 @@ module.exports.run = (client, message, args, database) => {
 
         if (!services.includes(service.toLowerCase())) return channel.send(`invalid service.`);
 
-        isAvailable = require("../database/isAvailable.js");
+        isAvailable = client.require("isAvailable.js");
 
         isAvailable = await isAvailable.Guild(ServerID, database, service);
 
@@ -109,7 +109,7 @@ module.exports.run = (client, message, args, database) => {
 
         if (!services.includes(service[0].toLowerCase())) return channel.send(`invalid service.`);
 
-        isAvailable = require("../database/isAvailable.js");
+        isAvailable = client.require("isAvailable.js");
 
         if (!isAvailable.Guild(ServerID, database, service[0])) {
             channel.send(`Service **${service[0]}** is already opened to the guild **${ServerID}** [${ServerName}]`);
@@ -221,7 +221,7 @@ module.exports.run = (client, message, args, database) => {
 
         if (!services.includes(service[0].toLowerCase())) return channel.send(`invalid service.`);
 
-        isAvailable = require("../database/isAvailable.js");
+        isAvailable = client.require("isAvailable.js");
         isAvailableGuild = await isAvailable.Guild(ServerID, database, service[0])
         if (!isAvailableGuild) {
             channel.send(`Service **${service[0]}** is not allowed to the guild **${ServerID}** [${ServerName}]`);

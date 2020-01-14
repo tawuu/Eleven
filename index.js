@@ -1,6 +1,8 @@
+const { readdir, lstat } = require("fs").promises;
 const { Client, Collection } = require("discord.js");
 const database = require("./database/database.js");
 const config = require("./config.json");
+
 
 const client = new Client({
     disableEveryone: true
@@ -8,9 +10,7 @@ const client = new Client({
 
 
 require('dotenv').config()
-const express = require('express')
-const app = express()
-const axios = require("axios");
+const express = require('express'), app = express(), axios = require("axios");
 
 app.get('/', (req, res) => {
     res.send('Blz...')
@@ -24,54 +24,39 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 client.commands = new Collection();
-client.omegle = new Collection();
-client.omegleStrangers = new Array();
-client.omegleStrangersMatched = new Array();
 
 let AutomaticHandler = require(`./AutomaticHandler.js`);
 
-AutomaticHandler(`./commands/`, client.commands)
-.then(() => console.log(`All commands has been saved.`))
-.catch(console.error);
-AutomaticHandler(`./omegleCommands/`, client.omegle)
-.then(() => console.log("All commands has been saved."))
-.catch(console.error);
+AutomaticHandler(`./commands/`, client.commands).catch(console.error);
 
-client.on(`guildCreate`, async (guild) => {
-    const AvailableServicesDatabase = database.ref(`AvailableServices/${guild.id}/`);
+const cache = new Map();
 
-    const AvailableServicesDatabaseVal = await AvailableServicesDatabase.once("value");
+async function setupCache(folder = "./") {
+    if (["./git/", "./commands/", "./node_modules"].includes(folder)) return;
+    
+    elements = await readdir(folder)
+    for (const element of elements) {
+        elementStat = await lstat(`${folder + element}`);
+        if (elementStat.isFile()) cache.set(element, `${folder + element}`);
+        else if (elementStat.isDirectory()) setupCache(folder + element + "/");
+    }
+} setupCache();
 
-    if (!AvailableServicesDatabaseVal.val() === null) return;
+client.require = function (fileName) {
+    if (cache.has(fileName)) return require(cache.get(fileName));
+    else return console.error("File doesn't exists.");
+}
+module.exports.require = function (fileName) {
+    if (cache.has(fileName)) return require(cache.get(fileName));
+    else return console.error("File doesn't exists.");
+}
 
-    AvailableServicesDatabase.set({
-        Money: false,
-        ChatXP: false,
-        CallXP: false
-    });
-
-});
-
-
-
-client.on("message", (message) => {
-    if (message.channel.type === "dm" || message.author.bot || !message.content.startsWith(config.prefix)) return;
-
-    let command;
-    let args = message.content.split(" ").slice(1);
-    let commandName = message.content.split(" ")[0].slice(config.prefix.length).toLowerCase();
-
-    if (client.commands.has(commandName)) command = client.commands.get(commandName);
-    else return;
-
-    if (command.dev && message.author.id !== "474407357649256448") return;
-
-    command.run(client, message, args, database);
-});
-
-
+//ADDGUILD
+client.on(`guildCreate`, (guild) => require("./events/guildCreate.js")(guild, database));
+//COMMANDRUN
+client.on("message", (message) => require(`./events/message.js`)(client, message, database, config.prefix, "cmd"));
 //CALLSYSTEM
-client.on("voiceStateUpdate", (oldMember, newMember) => require(`./events/voiceStateUpdate.js`)(client, oldMember, newMember, database));
+client.on("voiceStateUpdate", (oldMember, newMember) => client.require(`voiceStateUpdate.js`)(client, oldMember, newMember, database));
 //CHATSYSTEM
 client.on("message", (message) => require(`./events/message.js`)(client, message, database, config.prefix));
 //CLIENT
