@@ -30,8 +30,12 @@ client.omegleStrangersMatched = new Array();
 
 let AutomaticHandler = require(`./AutomaticHandler.js`);
 
-AutomaticHandler(`./commands/`, client.commands).catch(console.error);
-AutomaticHandler(`./omegleCommands/`, client.omegle).catch(console.error);
+AutomaticHandler(`./commands/`, client.commands)
+.then(() => console.log(`All commands has been saved.`))
+.catch(console.error);
+AutomaticHandler(`./omegleCommands/`, client.omegle)
+.then(() => console.log("All commands has been saved."))
+.catch(console.error);
 
 client.on(`guildCreate`, async (guild) => {
     const AvailableServicesDatabase = database.ref(`AvailableServices/${guild.id}/`);

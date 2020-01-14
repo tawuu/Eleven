@@ -19,7 +19,6 @@ module.exports = async function AutomaticHandler(path, handlermap) {
                     console.log(`Erro ao tentar carregar: ${file}`);
                 }
             } else if (fileStat.isDirectory()) AutomaticHandler(`${path}${file}/`, handlermap);
-
         });
     }
 
