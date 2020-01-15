@@ -6,13 +6,13 @@ module.exports.run = (client, message, args, database) => {
 
     const channel = message.channel;
 
-    if (!message.guild.member(client.user.id).hasPermission(["BAN_MEMBERS"])) return channel.send(`Eu não tenho permissão suficiente para utilizar este comando!`);
-    if (!message.member.hasPermission(["BAN_MEMBERS"])) return channel.send(`Você não tem permissão suficiente para utilizar este comando!`);
+    if (!message.member.hasPermission(["BAN_MEMBERS"])) return channel.send(client.message(["missing", "missing_member_permission", "pt"]));
+    if (!message.guild.member(client.user.id).hasPermission(["BAN_MEMBERS"])) return channel.send(client.message(["missing", "missing_me_permission", "pt"]));
 
-    if (!args[0]) return channel.send(`Insira o usuário que irá ser banido!`);
-    
+    if (!args[0]) return channel.send(client.message(["missing", "needs_member", "pt"]));
+
     if (message.mentions.members.first()) return collectReasonAndBan(message.mentions.members.first())
-    
+
     let findMember = [];
 
     argsLowerCase = args.join(" ").toLowerCase();
@@ -30,7 +30,7 @@ module.exports.run = (client, message, args, database) => {
 
     });
 
-    if (findMember.length <= 0) return channel.send(`Me desculpe mas não consegui encontrar nenhum usuário.`);
+    if (findMember.length <= 0) return channel.send(client.message(["missing", "member_not_found", "pt"]));
     else if (findMember.length > 1) {
 
         let membersFoundStr = "";
@@ -40,39 +40,40 @@ module.exports.run = (client, message, args, database) => {
             membersFoundOpts.set(++idx, member.user);
         }
 
-        channel.send(`Encontrei mais de um usuário [\`${findMember.length} usuários\`] escolha um pelo seu número! \`Para cancelar digite CANCELAR\``);
+        channel.send(client.message(["ban", "find_more_than_one_user", "pt"], findMember.length));
+
         channel.send(new RichEmbed().setDescription(`\`\`\`${membersFoundStr}\`\`\``));
-        channel.createMessageCollector(m => m.author.id === message.author.id && m.content.toLowerCase() === "cancelar" || !isNaN(parseInt(m.content)), { max: 1, time: 15000 })
+        channel.createMessageCollector(m => m.author.id === message.author.id && ["cancelar", "cancel"].includes(m.content.toLowerCase()) || !isNaN(parseInt(m.content)), { max: 1, time: 15000 })
             .on("collect", collected => {
-                if (collected.content.toLowerCase() === "cancelar") return;
+                if (["cancelar", "cancel"].includes(collected.content.toLowerCase())) return;
                 if (parseInt(collected.content) <= findMember.length && parseInt(collected.content) > 0) collectReasonAndBan(membersFoundOpts.get(collected.content));
             });
 
 
 
     } else if (findMember.length === 1 && args[0].length === 4) {
-        channel.send(`Encontrei apenas este usuário \`${findMember[0].userTAG}\` deseja bani-lo? \`Digite S para confirmar\` / \`Para cancelar digite CANCELAR\` `);
-        channel.createMessageCollector(m => m.author.id === message.author.id  && ["s", "cancelar"].includes(m.content.toLowerCase()), { max: 1, time: 15000 })
+        channel.send(client.message(["ban", "find_one_user", "pt"], findMember[0].userTAG));
+        channel.createMessageCollector(m => m.author.id === message.author.id && ["s", "cancelar", "cancel"].includes(m.content.toLowerCase()), { max: 1, time: 15000 })
             .on("collect", (collected) => {
-                if (collected.content.toLowerCase() === "cancelar") return;
+                if (["cancelar", "cancel"].includes(collected.content.toLowerCase())) return;
                 else if (collected.content.toLowerCase() === "s") collectReasonAndBan(findMember[0].guildMember);
             });
     } else if (findMember.length === 1) collectReasonAndBan(findMember[0].guildMember);
 
 
     function collectReasonAndBan(member) {
-        channel.send(`Digite o motivo do banimento: \`Para deixar em branco digite C\` / \`Para cancelar digite CANCELAR\``)
+        channel.send(client.message(["ban", "collect_reason", "pt"]))
         channel.createMessageCollector(m => m.author.id === message.author.id && m.content.length > 1)
             .on("collect", collected => {
-                if (collected.content.toLowerCase() === "c") banMember("Razão não informada.");
-                else if (collected.content.toLowerCase() === "cancelar") return
+                if (collected.content.toLowerCase() === "c") banMember(client.message(["ban", "action_reason", "pt"]));
+                else if (["cancelar", "cancel"].includes(collected.content.toLowerCase())) return
                 else banMember(collected.content);
             });
 
         function banMember(reason) {
             member.ban(reason)
-                .then(() => channel.send(`O usuário foi expulso com sucesso!`))
-                .catch((err) => channel.send(`Me desculpe, mas não consegui expulsar este usuário.`));
+                .then(() => channel.send(client.message(["ban", "success", "pt"])))
+                .catch((err) => channel.send(client.message(["ban", "unsuccess", "pt"])));
         }
 
     }

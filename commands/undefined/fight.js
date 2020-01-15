@@ -15,10 +15,10 @@ module.exports.run = async (client, message, args) => {
     mentionedId = message.mentions.members.first().id;
     mentionedUsername = client.users.get(mentionedId).username;
 
-    if (client.users.get(mentionedId).bot && mentionedId !== client.user.id) return channel.send(`You can not fight against a bot!`);
-    if (mentionedId === message.author.id) return channel.send(`You can not fight by yourself ;-;`);
-    if (Fighthing.has(message.author.id)) return channel.send(`Você já está em uma luta!`);
-    if (Fighthing.has(mentionedId)) return channel.send(`<@${mentionedId}> já está em uma luta!`);
+    if (client.users.get(mentionedId).bot && mentionedId !== client.user.id) return channel.send(client.message(["fight", "fight_with_bot", "pt"]));
+    if (mentionedId === message.author.id) return channel.send(client.message(["fight", "fight_by_itself", "pt"]));
+    if (Fighthing.has(message.author.id)) return channel.send(client.message(["fight", "already_fighting", "pt"]));
+    if (Fighthing.has(mentionedId)) return channel.send(["fight", "already_fighting_2", "pt"], `<@${mentionedId}>`);
 
 
     Fight = new Fight(
@@ -32,12 +32,12 @@ module.exports.run = async (client, message, args) => {
     let collector;
 
     channel.send(new RichEmbed()
-        .setDescription(`<@${Fight.turn.id}> escolha um ataque! [ \`${Fight.moves.join("/")}\` ]`));
+        .setDescription(client.message(["fight", "choose_one_attack", "pt"], `<@${Fight.turn.id}>`, Fight.moves.join("/"))));
 
     Fight.on("winner", fighter => {
         collector.stop();
         channel.send(new RichEmbed()
-            .setDescription(`Vencedor: **${fighter.name}**`));
+            .setDescription(client.message(["fight", "winner", "pt"], fighter.name)));
     });
 
     Fight.on("attack", (fighter, attack, damage, nextFighter) => client.require("attackMessage.js")(channel, fighter, attack, damage, nextFighter));

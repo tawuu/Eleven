@@ -33,7 +33,7 @@ const cache = new Map();
 
 async function setupCache(folder = "./") {
     if (["./git/", "./commands/", "./node_modules"].includes(folder)) return;
-    
+
     elements = await readdir(folder)
     for (const element of elements) {
         elementStat = await lstat(`${folder + element}`);
@@ -49,6 +49,38 @@ client.require = function (fileName) {
 module.exports.require = function (fileName) {
     if (cache.has(fileName)) return require(cache.get(fileName));
     else return console.error("File doesn't exists.");
+}
+
+let maxMessages = 5;
+let maxTime = 120000;
+let counting = false;
+let messagesCreatedAt = [];
+
+function startMonitoring() {
+    let interval = setInterval(() => {
+        if (messagesCreatedAt.length >= maxMessages) {
+            if (messagesCreatedAt[9] - messagesCreatedAt[0] < maxTime) {
+                console.log(`Mais de 10 mensagens no intervalo de: ${parseInt((messagesCreatedAt[9] - messagesCreatedAt[0]) / 1000)} segundos`);
+                clearInterval(interval);
+                counting = false;
+            }
+        }
+    }, 500);
+}
+
+client.on("message", message => {
+    if (!counting) { counting = true; startMonitoring() }
+    else messagesCreatedAt.push(message.createdTimestamp);
+
+});
+
+client.message = ([type, message, lang], first, second, third) => {
+    messages = require("./messages.json");
+    message = messages[type][message][lang];
+    if (first) message = message.replace("%%first%%", first);
+    if (second) message = message.replace("%%second%%", second);
+    if (third) message = message.replace("%%third%%", third);
+    return message;
 }
 
 //ADDGUILD

@@ -1,0 +1,251 @@
+{
+    "client_message": {
+        "mentioned_me": {
+            "pt": "Oi, meu comando de help tá em construção!",
+            "en": ""
+        }
+    },
+    "collector_option": {
+        "cancel": {
+            "pt": "cancelar",
+            "en": "cancel"
+        },
+        "confirm": {
+            "pt": "confirmar",
+            "en": "confirm"
+        }
+    },
+    "missing": {
+        "needs_member": {
+            "pt": "Você precisa mencionar um usuário!",
+            "en": "You need to mention an user!"
+        },
+        "member_not_found": {
+            "pt": "Eu não consegui encontrar o usuário.",
+            "en": "I couldn't find the user."
+        },
+        "missing_member_permission": {
+            "pt": "Você não tem permissões suficiente para isto.",
+            "en": "You dont have enough permissions to do that."
+        },
+        "missing_me_permission": {
+            "pt": "Eu não tenho permissões suficiente para isto.",
+            "en": "I don't have enought permissions to do that."
+        }
+    },
+    "warn": {
+        "needs_reason": {
+            "pt": "Você precisa informar o motivo do warn!",
+            "en": "..."
+        },
+        "member_warned": {
+            "pt": "%%first%% Recebeu um warn! [%%second%%] por: %%third%%",
+            "en": "%%first%% ....... [%%second%%] .... %%third%%"
+        },
+        "member_without_warns": {
+            "pt": "%%first%% não contém warns!",
+            "en": "%%first%% ...."
+        },
+        "member_with_warns": {
+            "pt": "%%first%% contém %%second%% warns!",
+            "en": "%%first%% .... %%second%% warns!"
+        }
+    },
+    "ban": {
+        "find_one_user": {
+            "pt": "Encontrei apenas este usuário `%%first%%` deseja bani-lo? `Digite S para confirmar` / `Para cancelar digite CANCELAR`",
+            "en": ".... `$%%first%%`"
+        },
+        "find_more_than_one_user": {
+            "pt": "Encontrei mais de um usuário [`%%first%% usuários`] escolha um pelo seu número `Para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "collect_reason": {
+            "pt": "Digite o motivo do banimento `Para deixar em branco digite C` / `Para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "action_reason": {
+            "pt": "Razão não informada.",
+            "en": "..."
+        },
+        "success": {
+            "pt": "O usuário foi banido com sucesso!",
+            "en": "..."
+        },
+        "unsuccess": {
+            "pt": "Me desculpe, mas não consegui banir este usuário",
+            "en": ""
+        }
+    },
+    "kick": {
+        "find_one_user": {
+            "pt": "Encontrei apenas este usuário `%%first%%` deseja expulsá-lo? `Digite S para confirmar` / `Para cancelar digite CANCELAR`",
+            "en": ".... `$%%first%%`"
+        },
+        "find_more_than_one_user": {
+            "pt": "Encontrei mais de um usuário [`%%first%% usuários`] escolha um pelo seu número `Para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "collect_reason": {
+            "pt": "Digite o motivo da expulsão `Para deixar em branco digite C` / `Para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "action_reason": {
+            "pt": "Razão não informada.",
+            "en": "..."
+        },
+        "success": {
+            "pt": "O usuário foi expulso com sucesso!",
+            "en": "..."
+        },
+        "unsuccess": {
+            "pt": "Me desculpe, mas não consegui expulsar este usuário",
+            "en": ""
+        }
+    },
+    "service": {
+        "commands_list": {
+            "pt": "Use um dos comandos: `%%first%%`",
+            "en": ""
+        },
+        "unavailable_command": {
+            "pt": "Use um comando válido! Lista: `%%first%%`",
+            "en": ""
+        },
+        "unavailable": {
+            "pt": "Seu servidor não possui o serviço %%first%%",
+            "en": ""
+        },
+        "unavailable_for_role": {
+            "pt": "Seu cargo não permite este serviço",
+            "en": ""
+        },
+        "addrole_collector": {
+            "pt": "Informe o cargo que será adicionado. `Um coletor de mensagens foi iniciado, para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "removerole_collector": {
+            "pt": "Informe o cargo que será removido. `Um coletor de mensagens foi iniciado, para cancelar digite CANCELAR`",
+            "en": ""
+        },
+        "collector_canceled": {
+            "pt": "O coletor foi cancelado.",
+            "en": ""
+        },
+        "role_not_found": {
+            "pt": "Cargo não encontrado. `Para cancelar digite CANCELAR ou tente novamente`",
+            "en": ""
+        },
+        "role_not_found_2": {
+            "pt": "Cargo não encontrado, por favor tente novamente.",
+            "en": ""
+        },
+        "role_saved": {
+            "pt": "O cargo %%first%% foi salvo com sucesso!",
+            "en": ""
+        },
+        "role_removed": {
+            "pt": "O cargo %%first%% foi removido com sucesso!",
+            "en": ""
+        },
+        "role_already_saved": {
+            "pt": "Este cargo já está salvo. `Para cancelar digite CANCELAR ou insira um cargo diferente!`",
+            "en": ""
+        },
+        "role_not_saved": {
+            "pt": "Este cargo não está salvo para ser removido. `Para cancelar digite CANCELAR ou insira um cargo diferente!`",
+            "en": ""
+        },
+        "role_not_saved_2": {
+            "pt": "Este cargo não está salvo para ser removido.",
+            "en": ""
+        },
+        "any_role_detected": {
+            "pt": "Este serviço não contem cargos salvos. `Cancelando o coletor.`",
+            "en": ""
+        },
+        "any_role_detected_2": {
+            "pt": "Este serviço não contém cargos salvos.",
+            "en": ""
+        },
+        "role_err": {
+            "pt": "Algo deu errado, consulte meu desenvolvedor ou tente novamente!",
+            "en": ""
+        }
+    },
+    "daily": {
+        "money_add": {
+            "pt": "Você adquiriu **R$%%first%%**",
+            "en": ""
+        },
+        "wait_for": {
+            "pt": "Você precisa esperar por **%%first%%** para buscar seu prêmio diário novamente!",
+            "en": ""
+        }
+    },
+    "fight": {
+        "fight_with_bot": {
+            "pt": "Você não pode lutar contra um bot!",
+            "en": ""
+        },
+        "fight_by_itself": {
+            "pt": "Você não pode lutar consigo mesmo!",
+            "en": ""
+        },
+        "already_fighting": {
+            "pt": "Você já está em uma luta!",
+            "en": ""
+        },
+        "already_fighting_2": {
+            "pt": "%%first%% já está em uma luta!",
+            "en": ""
+        },
+        "choose_one_attack": {
+            "pt": "%%first%% escolha um ataque! [ `%%second%%` ]",
+            "en": ""
+        },
+        "winner": {
+            "pt": "Vencedor: %%first%%",
+            "en": ""
+        }
+    },
+    "level": {
+        "type": {
+            "pt": "Digite o tipo de level qeu deseja ver `%%first%%`",
+            "en": ""
+        },
+        "null_level": {
+            "pt": "Você não tem nível ainda.",
+            "en": ""
+        },
+        "description": {
+            "pt": "LEVEL: **%%first%%** XP: **%%second%%** (**%%third%%**%)",
+            "en": ""
+        }
+    },
+    "callxp": {
+        "null_xp": {
+            "pt": "Você não tem CallXP!",
+            "en": ""
+        },
+        "description": {
+            "pt": "**%%first** Horas, **%%second%%** Minutos, **%%third%%** Segundos.",
+            "en": "**%%first** Hours, **%%second%%** Minutes, **%%third%%** Seconds."
+
+        }
+    },
+    "ranking": {
+        "type": {
+            "pt": "Digite o tipo de ranking que deseja ver `%%first%%`",
+            "en": ""
+        },
+        "null": {
+            "pt": "Infelizmente não há ninguém no ranking no momento.",
+            "en": ""
+        },
+        "time_formated": {
+            "pt": "**%%first%%** Horas e **%%second%%** Minutos",
+            "en": ""
+        }
+    }
+}

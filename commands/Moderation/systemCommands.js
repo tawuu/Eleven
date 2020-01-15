@@ -1,43 +1,53 @@
-module.exports.names = ["callsystem", "chat"];
+module.exports.names = ["chatsystem", "chat", "callsystem", "call", "moneysystem", "money"];
 
 module.exports.run = async (client, message, args, database) => {
     if (message.author.id !== message.guild.ownerID) return;
 
     const channel = message.channel;
 
+    let serviceCalled;
+
+    switch (message.content.toLowerCase().split(" ")[0].slice(1)) {
+        case "chatsystem": serviceCalled = ["chatxp", "MembersChatXP"];
+            break;
+        case "chat": serviceCalled = ["chatxp", "MembersChatXP"];
+            break;
+        case "callsystem": serviceCalled = ["callxp", "MembersCallXP"];
+            break;
+        case "call": serviceCalled = ["callxp", "MembersCallXP"];
+            break;
+        case "moneysystem": serviceCalled = ["money", "MembersMoney"];
+            break;
+        case "money": serviceCalled = ["money", "MembersMoney"];
+            break;
+    }
+
     isAvailable = client.require(`isAvailable.js`);
 
-    isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "callxp");
+    isAvailableGuild = await isAvailable.Guild(message.guild.id, database, serviceCalled[0]);
 
-    if (!isAvailableGuild) return channel.send(`Seu servidor não possui este serviço.`);
+    if (!isAvailableGuild) return channel.send(client.message(["service", "unavailable", "pt"], serviceCalled[0]));
 
     Commands = [`ADDROLE`, 'REMOVEROLE'];
 
-    if (!args[0]) return channel.send(`Use um dos comandos: \`${Commands.join(",")}\``);
+    if (!args[0]) return channel.send(client.message(["service", "commands_list", "pt"], Commands.join(",")));
 
-    if (!Commands.includes(args[0].toUpperCase())) return channel.send(`Use um comando válido! Lista: \`${Commands.join(",")}\``);
+    if (!Commands.includes(args[0].toUpperCase())) return channel.send(client.message(["service", "commands_list", "pt"], Commands.join(",")));
 
-    switch (args[0].toUpperCase()) {
-        case "ADDROLE": addRoleToServiceFromServer();
-            break;
-
-        case "REMOVEROLE": removeRoleToServiceFromServer();
-            break;
-
-        default: SomethingGoesWrong();
-            break;
-    }
+    if (args[0].toUpperCase() == "ADDROLE") return addRoleToServiceFromServer();
+    else if (args[0].toUpperCase() == "REMOVEROLE") return removeRoleToServiceFromServer();
+    else return SomethingGoesWrong();
 
     function addRoleToServiceFromServer() {
 
         if (!args.slice(1).join(" ")) {
-            channel.send(`Informe o cargo que será adicionado. \`Um coletor de mensagens foi iniciado, caso queira cancelar digite C\``);
+            channel.send(client.message(["service", "addrole_collector", "pt"]));
             const Collector = channel.createMessageCollector(m => m.author.id === message.author.id);
 
             Collector.on("collect", collected => {
-                if (["c", "cancel", "cancelar"].includes(collected.content.toLowerCase())) {
+                if ([client.message(["collector_option", "cancel", "pt"])].includes(collected.content.toLowerCase())) {
                     Collector.stop("stopped")
-                    return channel.send(`O coletor foi cancelado.`);
+                    return channel.send(client.message(["service", "collector_canceled", "pt"]));
                 };
 
                 let roleToAdd;
@@ -50,15 +60,15 @@ module.exports.run = async (client, message, args, database) => {
                 if (!everyone && collected.mentions.roles) roleToAdd = collected.mentions.roles.first();
                 else if (!everyone) roleToAdd = message.guild.roles.get(collected.content) || message.guild.roles.forEach(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === r);
 
-                if (!roleToAdd) channel.send(`Cargo não encontrado. \`Digite C para cancelar!\``);
-                else return AddNewRoleToService("MembersCallXP", roleToAdd)
+                if (!roleToAdd) channel.send(client.message(["service", "role_not_found", "pt"]));
+                else return AddNewRoleToService(serviceCalled[1], roleToAdd)
                     .then(() => {
                         Collector.stop();
-                        return channel.send(`O cargo ${roleToAdd} foi salvo com sucesso!`);
+                        return channel.send(client.message(["service", "role_saved", "pt"], roleToAdd));
                     })
                     .catch((err) => {
-                        if (err.message === "already exists") channel.send(`Este cargo já está salvo. \`Digite C para cancelar ou insira um cargo diferente!\``);
-                        else channel.send(`Algo deu errado, consulte meu desenvolvedor ou tente novamente!`);
+                        if (err.message === "already exists") channel.send(client.message["service", "role_already_saved", "pt"]);
+                        else channel.send(client.message["service", "role_err", "pt"]);
                     });
 
             });
@@ -66,34 +76,34 @@ module.exports.run = async (client, message, args, database) => {
         } else {
 
             roleToAdd = args.slice(1).join(" ");
-            console.log(roleToAdd)
+
             if (["everyone", "todos"].includes(roleToAdd.toLowerCase())) {
                 roleToAdd = message.guild.roles.find(c => c.name === "@everyone");
             } else {
                 roleToAdd = message.mentions.roles.first() || message.guild.roles.find(r => r.id === roleToAdd || r.name.toLowerCase() === roleToAdd.toLowerCase()) || message.guild.roles.get(roleToAdd);
             };
 
-            if (!roleToAdd) return channel.send(`Cargo não encontrado, por favor tente novamente.`);
-            else return AddNewRoleToService("MembersCallXP", roleToAdd)
+            if (!roleToAdd) return channel.send(client.message(["service", "role_not_found_2", "pt"]));
+            else return AddNewRoleToService(serviceCalled[1], roleToAdd)
                 .then(() => {
-                    return channel.send(`O cargo ${roleToAdd} foi salvo com sucesso!`)
+                    return channel.send(client.message(["service", "role_saved", "pt"], roleToAdd));
                 })
                 .catch(err => {
-                    if (err.message === "already exists") return channel.send(`O cargo ${roleToAdd} já está salvo.`);
-                    else return channel.send(`Algo deu errado... por favor consulte meu desenvolvedor ou tente novamente!`);
+                    if (err.message === "already exists") channel.send(client.message["service", "role_already_saved", "pt"]);
+                    else channel.send(client.message["service", "role_err", "pt"]);
                 });
         }
     }
 
     function removeRoleToServiceFromServer() {
         if (!args.slice(1).join(" ")) {
-            channel.send(`Informe o cargo qeu será removido \`Um coletor de mensagens foi iniciado, caso queira cancelar digite C\``);
+            channel.send(client.message(["service", "removerole_collector", "pt"]));
 
             const Collector = channel.createMessageCollector(m => m.author.id === message.author.id);
             Collector.on("collect", collected => {
-                if (["c", "cancel", "cancelar"].includes(collected.content.toLowerCase())) {
+                if (["cancel", "cancelar"].includes(collected.content.toLowerCase())) {
                     Collector.stop("stopped")
-                    return channel.send(`O coletor foi cancelado.`);
+                    return channel.send(client.message(["service", "collector_canceled", "pt"]));
                 }
 
                 let roleToRemove;
@@ -103,42 +113,41 @@ module.exports.run = async (client, message, args, database) => {
                     roleToRemove = collected.mentions.roles.first() || message.guild.roles.get(collected.content) || message.guild.roles.forEach(r => r.id === collected.content || r.name.toLowerCase() === collected.content.toLowerCase() || r === collected.content);
                 }
 
-                if (!roleToRemove) channel.send(`Cargo não encontrado. \`Digite C para cancelar ou tente novamente!\``);
-                else return removeRoleFromService("MembersCallXP", roleToRemove)
+                if (!roleToRemove) channel.send(client.message(["service", "role_not_found", "pt"]));
+                else return removeRoleFromService(serviceCalled[1], roleToRemove)
                     .then(() => {
                         Collector.stop();
-                        return channel.send(`O cargo ${roleToRemove} foi removido com sucesso!`);
+                        return channel.send(client.message(["service", "role_removed", "pt"], roleToRemove));
                     })
                     .catch((err) => {
-                        if (err.message === "role not saved") channel.send(`Este cargo não está salvo para ser removido. \`Digite C para cancelar!\``);
+                        if (err.message === "role not saved") channel.send(client.message(["service", "role_not_saved", "pt"]));
                         else if (err.message === "any role detected") {
                             Collector.stop();
-                            channel.send(`Este serviço não contem cargos salvos. \`Cancelando coletor.\``);
+                            channel.send(client.message(["service", "any_role_detected", "pt"]));
                         }
-                        else channel.send(`Algo deu errado, consulte meu desenvolvedor ou tente novamente!`);
+                        else channel.send(client.message(["service", "role_err", "pt"]));
                     });
 
             });
         } else {
-            roleToRemove = args.slice(1).join(" ");
             roleToRemove = args.slice(1).join(" ");
             if (["everyone", "todos"].includes(roleToRemove.toLowerCase())) {
                 roleToRemove = message.guild.roles.find(r => r.name === "@everyone");
             } else {
                 roleToRemove = message.mentions.roles.first() || message.guild.roles.find(r => r.id === roleToRemove || r.name.toLowerCase() === roleToRemove.toLowerCase()) || message.guild.roles.get(roleToRemove);
             }
-            
-            if (!roleToRemove) return channel.send(`Cargo não encontrado, por favor tente novamente.`);
-            else removeRoleFromService("MembersCallXP", roleToRemove)
+
+            if (!roleToRemove) return channel.send(client.message(["service", "role_not_found_2", "pt"]));
+            else removeRoleFromService(serviceCalled[1], roleToRemove)
                 .then(() => {
-                    return channel.send(`O cargo ${roleToRemove} foi removido com sucesso!`);
+                    return channel.send(["service", "role_removed", "pt"], roleToRemove);
                 })
                 .catch((err) => {
-                    if (err.message === "role not saved") channel.send(`Este cargo não está salvo para ser removido.`);
-                    else if (err.message === "any role detected") channel.send(`Este serviço não contem cargos salvos.`);
+                    if (err.message === "role not saved") channel.send(client.message(["service", "role_not_saved_2", "pt"]));
+                    else if (err.message === "any role detected") channel.send(client.message(["service", "any_role_detected_2", "pt"]));
                     else {
                         console.log(err);
-                        channel.send(`Algo deu errado, consulte meu desenvolvedor ou tente novamente!`);
+                        channel.send(client.message(["service", "role_err", "pt"]));
                     }
                 });
         }
@@ -194,7 +203,7 @@ module.exports.run = async (client, message, args, database) => {
     }
 
     function SomethingGoesWrong() {
-        return channel.send(`Algo deu errado.. por favor, tente novamente ou entre em contato com meu desenvolvedor.`);
+        return channel.send(client.message(["service", "role_err", "pt"]));
     }
 
 }

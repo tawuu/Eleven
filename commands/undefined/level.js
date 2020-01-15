@@ -11,7 +11,7 @@ module.exports.run = async (client, message, args, database) => {
     else if (args[0].toUpperCase() === levelTypes[1]) showLevelCall();
 
     function errArgsZero() {
-        channel.send(`Digite o tipo de level que deseja ver \`${levelTypes.join("/")}\``)
+        channel.send(client.message(["level", "type", "pt"], levelTypes.join("/")));
 
         filter = m => m.author.id === message.author.id;
 
@@ -23,25 +23,26 @@ module.exports.run = async (client, message, args, database) => {
     }
 
     async function showLevelChat() {
-        
+
         isAvailable = client.require(`isAvailable.js`);
         isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "chatxp");
         isAvailable = client.require(`isAvailable.js`);
         isAvailableRole = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "chatxp");
-        if (!isAvailableGuild) return channel.send(`Serviço desabilitado neste servidor.`).then(msg => msg.delete(6000));
-        if (!isAvailableRole) return channel.send(`Seu cargo não permite este serviço.`).then(msg => msg.delete(6000));
+
+        if (!isAvailableGuild) return channel.send(client.message(["service", "unavailable", "pt"], "chatxp")).then(msg => msg.delete(6000));
+        if (!isAvailableRole) return channel.send(client.message(["service", "unavailable_for_role", "pt"])).then(msg => msg.delete(6000));
 
         const userChatXPDatabase = database.ref(`Configs/${message.guild.id}/MembersChatXP/${message.author.id}`);
 
         const userChatXPDatabaseVal = await userChatXPDatabase.once("value");
 
-        if (userChatXPDatabaseVal.val() === null) return channel.send(`Você não tem nível ainda...`);
+        if (userChatXPDatabaseVal.val() === null) return channel.send(client.message(["level", "null_level", "pt"]));
 
         const { RichEmbed } = require('discord.js');
 
         TotalXPEmbed = new RichEmbed();
 
-        TotalXPEmbed.setDescription(`LEVEL: **${userChatXPDatabaseVal.val().Level}** XP: **${userChatXPDatabaseVal.val().XP}** (**${userChatXPDatabaseVal.val().NextLevel}**%)`)
+        TotalXPEmbed.setDescription(client.message(["level", "description", "pt"], userChatXPDatabaseVal.val().Level, userChatXPDatabaseVal.val().XP, userChatXPDatabaseVal.val().NextLevel));
 
 
         channel.send(TotalXPEmbed);
@@ -50,20 +51,20 @@ module.exports.run = async (client, message, args, database) => {
 
     async function showLevelCall() {
 
-        
+
         isAvailable = client.require(`isAvailable.js`);
         isAvailableGuild = await isAvailable.Guild(message.guild.id, database, "callxp");
         isAvailable = client.require(`isAvailable.js`);
         isAvailableRole = await isAvailable.GuildMemberRole(message.guild.id, message.author.id, database, "callxp");
-        
-        if (!isAvailableGuild) return channel.send(`Serviço desabilitado neste servidor.`).then(msg => msg.delete(6000));
-        if (!isAvailableRole) return channel.send(`Seu cargo não permite este serviço.`).then(msg => msg.delete(6000));
-        
+
+        if (!isAvailableGuild) return channel.send(client.message(["service", "unavailable", "pt"], "callxp")).then(msg => msg.delete(6000));
+        if (!isAvailableRole) return channel.send(client.message(["service", "unavailable_for_role", "pt"])).then(msg => msg.delete(6000));
+
         const userCallXPDatabase = database.ref(`Configs/${message.guild.id}/MembersCallXP/TotalTime/${message.author.id}`);
 
         const userCallXPDatabaseVal = await userCallXPDatabase.once("value");
 
-        if (!userCallXPDatabaseVal.val()) return channel.send(`Você não tem CallXP!`);
+        if (!userCallXPDatabaseVal.val()) return channel.send(client.message(["callxp", "null_xp", "pt"]));
 
         TotalSeconds = userCallXPDatabaseVal.val().TotalTimeSeconds;
 
@@ -76,7 +77,7 @@ module.exports.run = async (client, message, args, database) => {
 
         TotalTimeEmbed = new RichEmbed();
 
-        TotalTimeEmbed.setDescription(`**${Hours}** Hours, **${Minutes}** Minutes, **${Seconds}** Seconds.`)
+        TotalTimeEmbed.setDescription(client.message(["callxp", "description", "pt"], Hours, Minutes, Seconds));
 
         channel.send(TotalTimeEmbed);
 

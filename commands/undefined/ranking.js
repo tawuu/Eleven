@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args, database) => {
 
     function errArgsZero() {
 
-        channel.send(`Digite o tipo de ranking que deseja ver \`${rankingTypes.join("/")}\``)
+        channel.send(client.message(["ranking", "type", "pt"], rankingTypes.join("/")))
         filter = m => m.author.id === message.author.id;
 
         TypeCollector = channel.createMessageCollector(filter, { time: 10000 });
@@ -27,12 +27,12 @@ module.exports.run = async (client, message, args, database) => {
         isAvailable = client.require("isAvailable.js")
         isAvailable = await isAvailable.Guild(message.guild.id, database, "chatxp");
 
-        if (isAvailable === false) return channel.send(`Este servidor não contém este serviço...`).then(msg => msg.delete(6000));
+        if (isAvailable === false) return channel.send(client.message(["service", "unavailable", "pt"], "chatxp")).then(msg => msg.delete(6000));
 
         const UsersChatXPDatabase = database.ref(`Configs/${message.guild.id}/MembersChatXP`);
         const UsersChatXPDatabaseVal = await UsersChatXPDatabase.once("value");
 
-        if (UsersChatXPDatabaseVal.val() === null) return channel.send(`Infelizmente não há ninguém no ranking no momento...`);
+        if (UsersChatXPDatabaseVal.val() === null) return channel.send(client.message(["ranking", "null", "pt"]));
 
         UsersArray = [];
 
@@ -47,7 +47,7 @@ module.exports.run = async (client, message, args, database) => {
             });
         });
 
-        if (UsersArray.length === 0) return channel.send(`Infelizmente não há ninguém no ranking no momento...`);
+        if (UsersArray.length === 0) return channel.send(client.message(["ranking", "null", "pt"]));
 
         UsersArray.sort(function (a, b) {
             return b.xp - a.xp;
@@ -87,12 +87,12 @@ module.exports.run = async (client, message, args, database) => {
         isAvailable = client.require("isAvailable.js")
         isAvailable = await isAvailable.Guild(message.guild.id, database, "callxp");
 
-        if (isAvailable === false) return channel.send(`Este servidor não contém este serviço...`).then(msg => msg.delete(6000));
+        if (isAvailable === false) return channel.send(client.message(["service", "unavailable", "pt"], "callxp")).then(msg => msg.delete(6000));
 
         const UsersCallXPDatabase = database.ref(`Configs/${message.guild.id}/MembersCallXP/TotalTime`);
         const UsersCallXPDatabaseVal = await UsersCallXPDatabase.once("value");
 
-        if (UsersCallXPDatabaseVal.val() === null) return channel.send(`Infelizmente não há ninguém no ranking no momento...`).then(msg => msg.delete(6000));
+        if (UsersCallXPDatabaseVal.val() === null) return channel.send(client.message(["ranking", "null", "pt"])).then(msg => msg.delete(6000));
 
         UsersArray = [];
 
@@ -110,7 +110,7 @@ module.exports.run = async (client, message, args, database) => {
                 TotalSeconds: snap.val().TotalTimeSeconds,
                 Hours: Hours,
                 Minutes: Minutes,
-                TotalTimeFormated: `**${Hours}** Horas e **${Minutes}** Minutos`
+                TotalTimeFormated: client.message(["ranking", "time_formated", "pt"], Hours, Minutes)
             });
         });
 

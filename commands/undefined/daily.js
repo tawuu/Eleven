@@ -14,20 +14,18 @@ module.exports.run = async (client, message, args, database) => {
     
     const CheckerIsAvailableToDaily = client.require(`availableToDaily.js`);
 
-    // const ValueForDaily = database.ref(`Configs/${message.guild.id}/MembersMoney/DailyValue`);
-    
     const ValueForDaily = Math.floor(Math.random() * 500) + 100;
 
     const isAvailableToDaily = await CheckerIsAvailableToDaily.GuildMember(message.guild.id, message.author.id, database)
     if (isAvailableToDaily === true) {
         const Money = client.require("addMoney.js");
         Money.AddMoney(message.guild.id, message.author.id, ValueForDaily, database)
-        channel.send(new RichEmbed().setDescription(`Você adquiriu **R$${ValueForDaily}**`));
+        channel.send(new RichEmbed().setDescription(client.message(["daily", "money_add", "pt"], ValueForDaily)));
     } else {
-        return channel.send(`Você precisa esperar por: **${MsToTime(isAvailableToDaily)}** para buscar seu daily novamente!`);
+        return channel.send(client.message(["daily", "wait_for", "pt"], MsToTime(isAvailableToDaily)));
     }
 
-};
+};  
 
 function MsToTime(milis) {
     var seconds = Math.floor((milis / 1000) % 60),
