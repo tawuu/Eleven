@@ -51,3 +51,4 @@ Este sistema consiste em acumular tempo em canais de voz, mas claro, com minha i
 - \>level call [member]
   - _member = menção/nothing_
   - Veja o seu tempo acumulado ou do usuário que mencionou.
+...
