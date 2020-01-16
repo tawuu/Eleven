@@ -75,12 +75,16 @@ client.on("message", message => {
 });
 
 client.message = ([type, message, lang], first, second, third) => {
-    messages = require("./messages.json");
-    message = messages[type][message][lang];
-    if (first) message = message.replace("%%first%%", first);
-    if (second) message = message.replace("%%second%%", second);
-    if (third) message = message.replace("%%third%%", third);
-    return message;
+    try {
+        messages = require("./messages.json");
+        message = messages[type][message][lang];
+        if (first) message = message.replace("%%first%%", first);
+        if (second) message = message.replace("%%second%%", second);
+        if (third) message = message.replace("%%third%%", third);
+        return message;
+    } catch (e) {
+        return `undefined message: ${[type, message, lang]}`
+    };
 }
 
 //ADDGUILD

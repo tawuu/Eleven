@@ -247,5 +247,43 @@
             "pt": "**%%first%%** Horas e **%%second%%** Minutos",
             "en": ""
         }
+    },
+    "shop": {
+        "unavailable_command": {
+            "pt": "Escolha um comando válido! lista: `%%first%%`",
+            "en": ""
+        },
+        "missing_command": {
+            "pt": "Comandos disponíveis: `%%first%%`",
+            "en": ""
+        },
+        "collect_name": {
+            "pt": "Loja sendo criada! Para começar escolha um nome para ela! `Máximo de %%first%% caractéres`",
+            "en": ""
+        },
+        "name_confirm": {
+            "pt": "Você tem certeza de que o nome será `%%first%%`? Se sim digite: `%%second%%` novamente!",
+            "en": ""
+        },
+        "name_unconfirmed": {
+            "pt": "Nome não confirmado, por favor tente novamente!",
+            "en": ""
+        },
+        "name_confirmed/collect_coin": {
+            "pt": "O nome da loja foi confirmada! Escolha um nome para a moeda! `Máximo de %%first%% caracteres`",
+            "en": ""
+        },
+        "confirm_coin_name": {
+            "pt": "Você tem certeza de que o nome será `%%first%%`? Se sim digite: `%%second%%` novamente!",
+            "en": ""
+        },
+        "unconfirmed_coin_name": {
+            "pt": "Nome não confirmado, por favor tente novamente!",
+            "en": ""
+        },
+        "coin_name_confirmed/collect_coin_icon": {
+            "pt": "O nome da moeda foi confirmado com sucesso! Escolha um emote para identificar a moeda (Apenas do próprio Discord)",
+            "en": ""
+        }
     }
 }
